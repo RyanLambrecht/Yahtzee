@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Yahtzee</title>
+	<script src="https://unpkg.com/htmx.org@2.0.4"></script>
+</head>
+
+<body>
+	<h1>Yahtzee</h1>
+	<div id="body">
+		<button hx-get="/addPlayersForm" hx-target="#body" hx-swap="outerHTML">Start adding players</button>
+	</div>
+</body>
+
+</html>

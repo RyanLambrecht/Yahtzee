@@ -1,0 +1,10 @@
+{{define "nameField"}}
+<div><input name="name" required maxlength="30" placeholder="Player name"></div>
+{{- end}}
+<form hx-post="/players">
+	<div id="names">
+		{{template "nameField"}}
+	</div>
+	<button type="button" hx-get="/name-field" hx-target="#names" hx-swap="beforeend">+ Add another player</button>
+	<button hx-post="">Start game</button>
+</form>
