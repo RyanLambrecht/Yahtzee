@@ -2,19 +2,19 @@
 <button hx-get="/addPlayersForm" hx-target="#main" hx-swap="innerHTML">Start adding players</button>
 {{- end}}
 
-{{define "nameField" -}}
-<div class="name-field">
-	<input name="name" required maxlength="30" placeholder="Player name">
-	<button type="button" class="remove" onclick="this.parentElement.remove()">x</button>
-</div>
-{{- end}}
-
 {{define "addPlayersForm" -}}
 <form id="add-players" hx-post="/addPlayers" hx-target="#add-players" hx-swap="outerHTML">
 	<div id="names">
 		{{template "nameField"}}
 	</div>
 	<button type="button" hx-get="/name-field" hx-target="#names" hx-swap="beforeend">+ Add another player</button>
-	<button type="submit">Start game</button>
+	<button type="submit" :>Start game</button>
 </form>
+{{- end}}
+
+{{define "nameField" -}}
+<div class="name-field">
+	<input name="name" required maxlength="30" placeholder="Player name">
+	<button type="button" class="remove" onclick="this.parentElement.remove()">x</button>
+</div>
 {{- end}}

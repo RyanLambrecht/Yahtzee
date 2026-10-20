@@ -1,0 +1,9 @@
+{{define "board"}}
+<div class="board">
+	<ul class="horizontal-player-list">
+		{{range $i, $player := .Players}}
+		<li>{{$i}}:{{$player.Name}}[{ {$player.TotalPoints}}]</li>
+		{{end}}
+	</ul>
+</div>
+{{end}}

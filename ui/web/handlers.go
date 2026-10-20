@@ -8,11 +8,12 @@ import (
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
+	slog.Info("index view", "addr", r.RemoteAddr)
 	view(w, r, "startAddingPlayers", nil)
 }
 
 func addPlayersForm(w http.ResponseWriter, r *http.Request) {
-	slog.Info("prompting for players")
+	slog.Info("prompting for players", "addr", r.RemoteAddr)
 	fragment(w, "addPlayersForm", nil)
 }
 
@@ -49,5 +50,5 @@ func (s *server) addPlayers(w http.ResponseWriter, r *http.Request) {
 	}
 	slog.Info("players added", "count", len(names), "names", names)
 
-	view(w, r, "roll", nil)
+	view(w, r, "board", nil)
 }
