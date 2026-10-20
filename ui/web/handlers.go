@@ -1,17 +1,23 @@
 package web
 
 import (
+	"log/slog"
 	"net/http"
 	"strings"
 	"yahtzee/game"
 )
 
+func index(w http.ResponseWriter, r *http.Request) {
+	view(w, r, "startAddingPlayers", nil)
+}
+
 func addPlayersForm(w http.ResponseWriter, r *http.Request) {
-	render(w, addPlayersTmpl, nil)
+	slog.Info("prompting for players")
+	fragment(w, "addPlayersForm", nil)
 }
 
 func nameField(w http.ResponseWriter, r *http.Request) {
-	renderNamed(w, addPlayersTmpl, "nameField", nil)
+	fragment(w, "nameField", nil)
 }
 
 func (s *server) addPlayers(w http.ResponseWriter, r *http.Request) {
@@ -33,17 +39,15 @@ func (s *server) addPlayers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.mu.Lock()
-	defer s.mu.Unlock()
+	s.Mux.Lock()
+	defer s.Mux.Unlock()
 	for _, n := range names {
-		s.games = append(s.games, player{
+		s.Games = append(s.Games, player{
 			Name: n,
 			Game: game.NewGame(),
 		})
 	}
-	render(w, addPlayersTmpl, nil)
-}
+	slog.Info("players added", "count", len(names), "names", names)
 
-func index(w http.ResponseWriter, r *http.Request) {
-	render(w, indexTmpl, nil)
+	view(w, r, "roll", nil)
 }

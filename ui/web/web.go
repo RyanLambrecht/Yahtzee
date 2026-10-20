@@ -1,10 +1,9 @@
 // Package web
-// used to run the server for yahtzee
+// Serves the yahtzee game
 package web
 
 import (
 	"embed"
-	"html/template"
 	"log"
 	"net/http"
 	"sync"
@@ -17,17 +16,13 @@ type player struct {
 }
 
 type server struct {
-	mu    sync.Mutex
-	games []player
+	Mux                sync.Mutex
+	CurrentPlayerIndex int
+	Games              []player
 }
 
-// embeds the files into the binary
-var assets embed.FS
-
-var (
-	indexTmpl      = template.Must(template.ParseFS(assets, "templates/index.html"))
-	addPlayersTmpl = template.Must(template.ParseFS(assets, "templates/forms/addPlayers.html"))
-)
+//go:embed  static
+var staticFS embed.FS
 
 func Run() {
 	ser := &server{}
@@ -38,9 +33,15 @@ func Run() {
 
 func (s *server) routes() http.Handler {
 	mux := http.NewServeMux()
+	mux.Handle("GET /static/", http.FileServerFS(staticFS))
 	mux.HandleFunc("GET /{$}", index)
 	mux.HandleFunc("GET /addPlayersForm", addPlayersForm)
 	mux.HandleFunc("GET /name-field", nameField)
 	mux.HandleFunc("POST /addPlayers", s.addPlayers)
 	return mux
+}
+
+func (s *server) reset() {
+	s.Games = []player{}
+	s.CurrentPlayerIndex = 0
 }

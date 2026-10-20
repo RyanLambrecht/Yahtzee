@@ -1,8 +1,0 @@
-<div id="board">
-  <ul>
-  {{range $i, $face := .Dice}}
-    <li>position {{$i}}: face {{$face}}</li>
-  {{end}}
-  </ul>
-  <button hx-post="/roll" hx-target="#board" hx-swap="outerHTML">Roll again</button>
-</div>

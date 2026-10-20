@@ -1,4 +1,5 @@
-<!doctype html>
+{{define "index"}}
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -7,11 +8,10 @@
 	<script src="https://unpkg.com/htmx.org@2.0.4"></script>
 </head>
 
-<body>
+<body hx-target="#main" hx-swap="innerHTML">
 	<h1>Yahtzee</h1>
-	<div id="body">
-		<button hx-get="/addPlayersForm" hx-target="#body" hx-swap="outerHTML">Start adding players</button>
-	</div>
+	<div id="main">{{.Content}}</div>
 </body>
 
 </html>
+{{end}}
