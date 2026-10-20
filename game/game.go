@@ -1,10 +1,11 @@
 package game
 
 const (
-	UnusedCategoryValue = -1
-	NumberOfDice        = 5
-	rerolls             = 2
-	FaceCount           = 6
+	UnusedCategoryValue   = -1
+	NumberOfDice          = 5
+	rerolls               = 2
+	FaceCount             = 6
+	UpperBonusRequirement = 35
 )
 
 type Category int
