@@ -1,19 +1,19 @@
-{{define "rerollForm" -}}
+{{define "rerollDice" -}}
 <div id="reroll">
-	<form hx-post="/reroll" hx-target="#board" hx-swap="couterHTML">
+	<form hx-post="/reroll" hx-target="#reroll" hx-swap="outerHTML">
 		{{range $i, $face := .Dice}}
+		<input type="hidden" name="dice" value="{{$face}}">
 		<label>
-			<input type="hidden" name="dice" value="{{$face}}"></input>
-			<input tyep="checkbox" name="reroll" value="{{$i}}" fact {{$face}} </label>
-			{{end}}
+			<input type="checkbox" name="reroll" value="{{$i}}">
+			{{$face}}
+		</label>
+		{{end}}
+		<button type="submit">Reroll selected</button>
 	</form>
 </div>
-{{end -}}
+{{- end}}
 
-{{define "roll" -}}
-<div id="roll">
-	<button id="rollButton" type="button" hx-get"roll" hx-target="#roll">
-		Roll
-	</button>
-</div>
+
+{{define "startRoll" -}}
+<button id="startRoll" type="button" hx-get="/roll" hx-target="#startRoll" hx-swap="outerHTML">Roll</button>
 {{- end}}

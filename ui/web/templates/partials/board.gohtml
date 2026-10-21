@@ -7,21 +7,17 @@
 </div>
 {{end}}
 
-{{define "startRoll" -}}
-<button id="gameCard" type="button" hx-get="/roll" hx-target="#board-content" hx-swap="outerHTML"> Roll </button>
-{{- end}}
-
-{{define "playerCard" -}}
+{{define "gameCard" -}}
 <div class="card">
 	{{if .Players}}<h2>{{(index .Players .CurrentPlayerIndex).Name}}</h2>{{end}}
 	<table>
-		<div class="cardHeader">
+		<thead class="cardHeader">
 			<tr>
 				<th>Category</th>
 				{{range $_, $player := .Players}}<th>{{$player.Name}}</th>{{end}}
 			</tr>
-		</div>
-		<div class="cardUpper">
+		</thead>
+		<tbody class="cardUpper">
 			{{range $cat := .UpperSection}}
 			<tr>
 				<th>{{$cat.Name}}</th>
@@ -30,14 +26,14 @@
 				{{end}}
 			</tr>
 			{{end}}
-		</div>
-		<div class="cardBonus">
+		</tbody>
+		<tbody class="cardBonus">
 			<tr>
 				<th>Bonus</th>
-				{{range $_, $player := .Players}}<th>{{$player.Bonus}}</th>{{end}}
+				{{range $_, $player := .Players}}<td>{{$player.Bonus}}</td>{{end}}
 			</tr>
-		</div>
-		<div class="cardLower">
+		</tbody>
+		<tbody class="cardLower">
 			{{range $cat := .LowerSection}}
 			<tr>
 				<th>{{$cat.Name}}</th>
@@ -46,13 +42,60 @@
 				{{end}}
 			</tr>
 			{{end}}
-		</div>
-		<div class="cardTotal">
+		</tbody>
+		<tfoot class="cardTotal">
 			<tr>
 				<th>Total</th>
-				{{range $_, $player := .Players}}<th>{{$player.TotalPoints}}</th>{{end}}
+				{{range $_, $player := .Players}}<td>{{$player.TotalPoints}}</td>{{end}}
 			</tr>
-		</div>
+		</tfoot>
+	</table>
+</div>
+{{end -}}
+
+
+{{define "gameCardScore" -}}
+<div class="card">
+	{{if .Players}}<h2>{{(index .Players .CurrentPlayerIndex).Name}}</h2>{{end}}
+	<table>
+		<thead class="cardHeader">
+			<tr>
+				<th>Category</th>
+				{{range $_, $player := .Players}}<th>{{$player.Name}}</th>{{end}}
+			</tr>
+		</thead>
+		<tbody class="cardUpper">
+			{{range $cat := .UpperSection}}
+			<tr>
+				<th>{{$cat.Name}}</th>
+				{{range $_, $player := $.Players}}
+				<td>{{index $player.PointsByCategory $cat.Index}}</td>
+				{{end}}
+			</tr>
+			{{end}}
+		</tbody>
+		<tbody class="cardBonus">
+			<tr>
+				<th>Bonus</th>
+				{{range $_, $player := .Players}}<td>{{$player.Bonus}}</td>{{end}}
+			</tr>
+		</tbody>
+		<tbody class="cardLower">
+			{{range $cat := .LowerSection}}
+			<tr>
+				<th>{{$cat.Name}}</th>
+				{{range $_, $player := $.Players}}
+				<td>{{index $player.PointsByCategory $cat.Index}}</td>
+				{{end}}
+			</tr>
+			{{end}}
+		</tbody>
+		<tfoot class="cardTotal">
+			<tr>
+				<th>Total</th>
+				{{range $_, $player := .Players}}<td>{{$player.TotalPoints}}</td>{{end}}
+			</tr>
+		</tfoot>
 	</table>
 </div>
 {{end -}}

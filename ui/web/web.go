@@ -37,16 +37,22 @@ func Run() {
 func (s *server) routes() http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("GET /static/", http.FileServerFS(staticFS))
-	mux.HandleFunc("GET /{$}", index)
+	mux.HandleFunc("GET /{$}", s.index)
 	mux.HandleFunc("GET /addPlayersForm", addPlayersForm)
 	mux.HandleFunc("GET /name-field", nameField)
 	mux.HandleFunc("POST /addPlayers", s.addPlayers)
 	mux.HandleFunc("GET /startRound", s.turn)
-	mux.HandleFunc("Get /roll", s.roll)
+	mux.HandleFunc("GET /roll", s.roll)
+	mux.HandleFunc("POST /reroll", s.reroll)
+	mux.HandleFunc("GET /score", s.score)
 	return mux
 }
 
 func (s *server) reset() {
 	s.Games = []player{}
 	s.CurrentPlayerIndex = 0
+}
+
+func (s *server) currentPlayer() player {
+	return s.Games[s.CurrentPlayerIndex]
 }

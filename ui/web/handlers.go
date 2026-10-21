@@ -3,12 +3,14 @@ package web
 import (
 	"log/slog"
 	"net/http"
+	"strconv"
 	"strings"
 	"yahtzee/game"
 )
 
-func index(w http.ResponseWriter, r *http.Request) {
+func (s *server) index(w http.ResponseWriter, r *http.Request) {
 	slog.Info("index view", "addr", r.RemoteAddr)
+	s.reset()
 	view(w, r, "startAddingPlayers", nil)
 }
 
@@ -22,17 +24,59 @@ func nameField(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *server) turn(w http.ResponseWriter, r *http.Request) {
-	slog.Info("starting turn", "player", s.Games[s.CurrentPlayerIndex])
+	slog.Info("starting turn", "player", s.currentPlayer())
 	fragment(w, "board", s.buildGameView())
 
 }
 
+// TODO: implement this and add a variant for board that just displays
+// the dice, and turn avalible slots for the current card into a form
+func (s *server) score(w http.ResponseWriter, r *http.Request) {
+	slog.Info("letting player score", "player", s.currentPlayer())
+
+}
+
+func (s *server) reroll(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "bad form", http.StatusBadRequest)
+		return
+	}
+
+	var indices []int
+	for _, v := range r.PostForm["reroll"] {
+		i, err := strconv.Atoi(v)
+		if err != nil || i < 0 || i >= game.NumberOfDice {
+			http.Error(w, "bad reroll index", http.StatusBadRequest)
+			return
+		}
+		indices = append(indices, i)
+	}
+
+	p := s.currentPlayer()
+	faces := p.Game.Faces()
+
+	fc := game.FaceCounts{}
+	for _, idx := range indices {
+		fc[faces[idx]-1]++
+	}
+
+	slog.Info("rerolling", "indices", indices, "player", p.Name)
+	if err := p.Game.Reroll(fc); err != nil {
+		slog.Error("reroll failed", "player", p.Name, "error", err)
+		http.Error(w, err.Error(), http.StatusConflict)
+		return
+	}
+
+	fragment(w, "rerollDice", buildPlayerView(p))
+}
+
 func (s *server) roll(w http.ResponseWriter, r *http.Request) {
 	slog.Info("rolling for player", "playerIndex", s.CurrentPlayerIndex)
-	slog.Debug("WORK IN PROGRESS, YOU SHOULDNT SEE THIS")
-
-	s.Mux.Lock()
-	defer s.Mux.Unlock()
+	p := s.currentPlayer()
+	if err := p.Game.Roll(); err != nil {
+		slog.Error("There was a error rolling the players dice")
+	}
+	fragment(w, "rerollDice", buildPlayerView(p))
 
 }
 

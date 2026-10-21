@@ -10,6 +10,7 @@ type PlayerView struct {
 	PointsByCategory map[game.Category]int
 	TotalPoints      int
 	Bonus            int
+	Dice             []int
 }
 
 type GameView struct {
@@ -31,8 +32,8 @@ var UpperCategories = []Category{
 }
 
 var LowerCategories = []Category{
-	{"TOK", 6}, {"FOK", 7}, {"FH", 8},
-	{"SS", 9}, {"LS", 10}, {"Yahtzee", 11}, {"Chance", 12},
+	{"T.O.K.", 6}, {"F.O.K.", 7}, {"F.H.", 8},
+	{"S.S.", 9}, {"L.S.", 10}, {"Yahtzee", 11}, {"Chance", 12},
 }
 
 func (s *server) buildGameView() GameView {
@@ -65,6 +66,7 @@ func buildPlayerView(p player) PlayerView {
 		PointsByCategory: pts,
 		TotalPoints:      p.Game.TotalPoints(),
 		Bonus:            bonus,
+		Dice:             p.Game.Faces(),
 	}
 
 	return pv
