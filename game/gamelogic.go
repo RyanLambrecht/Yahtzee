@@ -172,8 +172,8 @@ func (g *Game) qualifiesAsJoker() bool {
 	panic(ErrNoDiceRolled)
 }
 
-// GetPointsForSlot returns the points that would be scored for a specific slot if selected
-func (g *Game) GetPointsForSlot(slotChoice Category) int {
+// GetPotentialPointsForCategory returns the points that would be scored for a specific slot if selected
+func (g *Game) GetPotentialPointsForCategory(slotChoice Category) int {
 	status := g.getYahtzeeStatus()
 
 	switch slotChoice {
@@ -226,7 +226,7 @@ func (g *Game) PlacePoints(slotChoice Category) error {
 		g.card[Yahtzee] += 100
 	}
 
-	g.card[slotChoice] = g.GetPointsForSlot(slotChoice)
+	g.card[slotChoice] = g.GetPotentialPointsForCategory(slotChoice)
 
 	if len(g.options) == 0 {
 		g.phase = PhaseEnd
@@ -239,8 +239,13 @@ func (g *Game) PlacePoints(slotChoice Category) error {
 func (g *Game) TotalPoints() int {
 	total := 0
 	total += g.upperTotal()
+	if total > UpperBonusRequirement {
+		total += UpperBonusAmount
+	}
 	for i := int(Tok); i <= int(Chance); i++ {
-		total += g.card[i]
+		if g.card[i] != UnusedCategoryValue {
+			total += g.card[i]
+		}
 	}
 	return total
 
@@ -250,10 +255,13 @@ func (g *Game) upperTotal() int {
 	total := 0
 	// doesn't use a for range loop to keep its starting point dependent on Ones
 	for i := int(Ones); i < int(Sixes); i++ {
-		total += g.card[i]
+		if g.card[i] != UnusedCategoryValue {
+			total += g.card[i]
+		}
 	}
 	return total
 }
+
 func (g *Game) UpperBonus() bool {
 	return g.upperTotal() >= UpperBonusRequirement
 

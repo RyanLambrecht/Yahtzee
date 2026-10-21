@@ -21,6 +21,21 @@ func nameField(w http.ResponseWriter, r *http.Request) {
 	fragment(w, "nameField", nil)
 }
 
+func (s *server) turn(w http.ResponseWriter, r *http.Request) {
+	slog.Info("starting turn", "player", s.Games[s.CurrentPlayerIndex])
+	fragment(w, "board", s.buildGameView())
+
+}
+
+func (s *server) roll(w http.ResponseWriter, r *http.Request) {
+	slog.Info("rolling for player", "playerIndex", s.CurrentPlayerIndex)
+	slog.Debug("WORK IN PROGRESS, YOU SHOULDNT SEE THIS")
+
+	s.Mux.Lock()
+	defer s.Mux.Unlock()
+
+}
+
 func (s *server) addPlayers(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "bad form", http.StatusBadRequest)
@@ -41,14 +56,16 @@ func (s *server) addPlayers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.Mux.Lock()
-	defer s.Mux.Unlock()
 	for _, n := range names {
 		s.Games = append(s.Games, player{
 			Name: n,
 			Game: game.NewGame(),
 		})
 	}
+	s.Mux.Unlock()
+	gameView := s.buildGameView()
+
 	slog.Info("players added", "count", len(names), "names", names)
 
-	view(w, r, "board", nil)
+	view(w, r, "board", gameView)
 }

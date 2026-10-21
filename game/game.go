@@ -5,7 +5,8 @@ const (
 	NumberOfDice          = 5
 	rerolls               = 2
 	FaceCount             = 6
-	UpperBonusRequirement = 35
+	UpperBonusRequirement = 63
+	UpperBonusAmount      = 35
 )
 
 type Category int
@@ -25,7 +26,7 @@ const (
 	Yahtzee
 	Chance
 
-	categoryCount
+	CategoryCount
 )
 
 type Phase int
@@ -56,8 +57,8 @@ type Game struct {
 
 // NewGame creates a new yahtzee game
 func NewGame() *Game {
-	card := make([]int, categoryCount)
-	options := make([]Category, categoryCount)
+	card := make([]int, CategoryCount)
+	options := make([]Category, CategoryCount)
 	for i := range card {
 		options[i] = Category(i)
 		card[i] = UnusedCategoryValue

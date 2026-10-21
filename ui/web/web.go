@@ -5,14 +5,16 @@ package web
 import (
 	"embed"
 	"log"
+	"log/slog"
 	"net/http"
 	"sync"
 	"yahtzee/game"
 )
 
 type player struct {
-	Name string
-	Game *game.Game
+	Name  string
+	Game  *game.Game
+	Round int
 }
 
 type server struct {
@@ -28,6 +30,7 @@ func Run() {
 	ser := &server{}
 	mux := ser.routes()
 
+	slog.Info("started up server")
 	log.Fatal(http.ListenAndServe(":8080", mux))
 }
 
@@ -38,6 +41,8 @@ func (s *server) routes() http.Handler {
 	mux.HandleFunc("GET /addPlayersForm", addPlayersForm)
 	mux.HandleFunc("GET /name-field", nameField)
 	mux.HandleFunc("POST /addPlayers", s.addPlayers)
+	mux.HandleFunc("GET /startRound", s.turn)
+	mux.HandleFunc("Get /roll", s.roll)
 	return mux
 }
 
