@@ -44,8 +44,15 @@ func (s *server) placePointInSlot(w http.ResponseWriter, r *http.Request) {
 	}
 	s.CurrentPlayerIndex = (s.CurrentPlayerIndex + 1) % len(s.Games)
 
+	//Check to see if the game is over before the next players turn is served
+	if s.currentPlayer().Game.GetPhase() == game.PhaseEnd {
+		w.Header().Set("HX-Retarget", "#board")
+		w.Header().Set("HX-Reswap", "outerHTML")
+		fragment(w, "boardEnd", s.buildGameEndView())
+		return
+	}
+
 	fragment(w, "boardPlay", s.buildGameView())
-	//TODO:
 }
 
 func (s *server) score(w http.ResponseWriter, r *http.Request) {

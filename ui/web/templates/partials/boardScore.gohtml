@@ -1,5 +1,6 @@
 {{define "boardScore" -}}
 <div id="board">
+	{{template "currentPlayer" .}}
 	{{template "cardScore" .}}
 	{{template "displayRoll" (index .Players .CurrentPlayerIndex)}}
 </div>
@@ -7,14 +8,8 @@
 
 {{define "cardScore" -}}
 <div id="cardScore">
-	{{if .Players}}<h2>{{(index .Players .CurrentPlayerIndex).Name}}</h2>{{end}}
 	<table>
-		<thead class="cardHeader">
-			<tr>
-				<th>Category</th>
-				{{range $_, $player := .Players}}<th>{{$player.Name}}</th>{{end}}
-			</tr>
-		</thead>
+		{{template "cardHead" .}}
 		<tbody class="cardUpper">
 			{{range $cat := .UpperSection}}
 			<tr>
@@ -46,15 +41,10 @@
 			</tr>
 			{{end}}
 		</tbody>
-		<tfoot class="cardTotal">
-			<tr>
-				<th>Total</th>
-				{{range $_, $player := .Players}}<td>{{$player.TotalPoints}}</td>{{end}}
-			</tr>
-		</tfoot>
+		{{template "cardFoot" .}}
 	</table>
 </div>
-{{end -}}
+{{- end }}
 
 {{define "displayRoll" -}}
 <div id="displayRoll">

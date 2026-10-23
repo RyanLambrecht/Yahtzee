@@ -46,6 +46,7 @@ func (s *server) routes() http.Handler {
 	mux.HandleFunc("POST /reroll", s.reroll)
 	mux.HandleFunc("GET /score", s.score)
 	mux.HandleFunc("POST /score/{index}", s.placePointInSlot)
+	mux.HandleFunc("GET /reset", s.index) //WARN: this is a tempory thing, must be changed once theres multiple clients
 	return mux
 }
 

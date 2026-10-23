@@ -22,6 +22,13 @@ type GameView struct {
 	UnusedSlot         int
 }
 
+type GameEndView struct {
+	Players      []PlayerView
+	UpperSection []Category
+	LowerSection []Category
+	Winner       string
+}
+
 type Category struct {
 	Name  string
 	Index int
@@ -33,8 +40,8 @@ var UpperCategories = []Category{
 }
 
 var LowerCategories = []Category{
-	{"T.O.K.", 6}, {"F.O.K.", 7}, {"F.H.", 8},
-	{"S.S.", 9}, {"L.S.", 10}, {"Yahtzee", 11}, {"Chance", 12},
+	{"T.O.K.", int(game.Tok)}, {"F.O.K.", int(game.Fok)}, {"F.H.", int(game.Fh)},
+	{"S.S.", int(game.Ss)}, {"L.S.", int(game.Ls)}, {"Yahtzee", int(game.Yahtzee)}, {"Chance", int(game.Chance)},
 }
 
 func (s *server) buildGameView() GameView {
@@ -84,4 +91,25 @@ func buildPlayerView(p player) PlayerView {
 	}
 
 	return pv
+}
+
+func (s *server) buildGameEndView() GameEndView {
+	playerViews := make([]PlayerView, 0, len(s.Games))
+	winner := s.Games[0]
+
+	for i := 1; i < len(s.Games); i++ {
+		g := s.Games[i]
+		playerViews = append(playerViews, buildPlayerView(g))
+		if g.Game.TotalPoints() > winner.Game.TotalPoints() {
+			winner = g
+		}
+	}
+
+	return GameEndView{
+		Players:      playerViews,
+		UpperSection: UpperCategories,
+		LowerSection: LowerCategories,
+		Winner:       winner.Name,
+	}
+
 }

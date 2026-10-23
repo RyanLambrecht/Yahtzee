@@ -1,3 +1,25 @@
+{{define "currentPlayer" -}}
+<h2>{{(index .Players .CurrentPlayerIndex).Name}}</h2>
+{{- end}}
+
+{{define "cardHead"}}
+<thead class="cardHeader">
+	<tr>
+		<th>Category</th>
+		{{range $_, $player := .Players}}<th>{{$player.Name}}</th>{{end}}
+	</tr>
+</thead>
+{{- end}}
+
+{{define "cardFoot"}}
+<tfoot class="cardTotal">
+	<tr>
+		<th>Total</th>
+		{{range $_, $player := .Players}}<td>{{$player.TotalPoints}}</td>{{end}}
+	</tr>
+</tfoot>
+{{- end}}
+
 {{define "bonus" -}}
 <tbody class="cardBonus">
 	<tr>

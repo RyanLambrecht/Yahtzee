@@ -1,0 +1,9 @@
+{{define "boardEnd" -}}
+<div id="board">
+	<h2>{{.Winner}} Won!</h2>
+	{{template "cardDisplay" .}}
+	<button type="button" hx-get="/reset" hx-target="#board" hx-swap="outerHTML">
+		Start a new game
+	</button>
+</div>
+{{- end}}
