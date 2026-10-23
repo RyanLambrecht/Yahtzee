@@ -1,0 +1,67 @@
+{{define "boardPlay" -}}
+<div id="board">
+	{{template "cardPlay" .}}
+	{{template "startRoll" }}
+</div>
+{{- end}}
+
+{{define "cardPlay" -}}
+<div id="cardPlay">
+	{{if .Players}}<h2>{{(index .Players .CurrentPlayerIndex).Name}}</h2>{{end}}
+	<table>
+		<thead class="cardHeader">
+			<tr>
+				<th>Category</th>
+				{{range $_, $player := .Players}}<th>{{$player.Name}}</th>{{end}}
+			</tr>
+		</thead>
+		<tbody class="cardUpper">
+			{{range $cat := .UpperSection}}
+			<tr>
+				<th>{{$cat.Name}}</th>
+				{{range $_, $player := $.Players}}
+				<td>{{index $player.PointsByCategory $cat.Index}}</td>
+				{{end}}
+			</tr>
+			{{end}}
+		</tbody>
+		{{template "bonus" .}}
+		<tbody class="cardLower">
+			{{range $cat := .LowerSection}}
+			<tr>
+				<th>{{$cat.Name}}</th>
+				{{range $_, $player := $.Players}}
+				<td>{{index $player.PointsByCategory $cat.Index}}</td>
+				{{end}}
+			</tr>
+			{{end}}
+		</tbody>
+		<tfoot class="cardTotal">
+			<tr>
+				<th>Total</th>
+				{{range $_, $player := .Players}}<td>{{$player.TotalPoints}}</td>{{end}}
+			</tr>
+		</tfoot>
+	</table>
+</div>
+{{end -}}
+
+
+{{define "startRoll" -}}
+<button id="startRoll" type="button" hx-get="/roll" hx-target="#startRoll" hx-swap="outerHTML">Roll</button>
+{{- end}}
+
+{{define "rerollDice" -}}
+<div id="reroll">
+	<form hx-post="/reroll" hx-target="#reroll" hx-swap="outerHTML">
+		{{range $i, $face := .Dice}}
+		<input type="hidden" name="dice" value="{{$face}}">
+		<label>
+			<input type="checkbox" name="reroll" value="{{$i}}">
+			{{$face}}
+		</label>
+		{{end}}
+		<button type="submit">Reroll selected</button>
+	</form>
+</div>
+{{- end}}

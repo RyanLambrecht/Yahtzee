@@ -25,18 +25,41 @@ func nameField(w http.ResponseWriter, r *http.Request) {
 
 func (s *server) turn(w http.ResponseWriter, r *http.Request) {
 	slog.Info("starting turn", "player", s.currentPlayer())
-	fragment(w, "board", s.buildGameView())
+	fragment(w, "boardPlay", s.buildGameView())
 
 }
 
-// TODO: implement this and add a variant for board that just displays
-// the dice, and turn avalible slots for the current card into a form
+func (s *server) placePointInSlot(w http.ResponseWriter, r *http.Request) {
+	slog.Info("placing points", "player", s.currentPlayer())
+	idx, err := strconv.Atoi(r.PathValue("index"))
+	if err != nil {
+		http.Error(w, "invalid category", http.StatusBadRequest)
+		return
+	}
+	currentPlayer := s.currentPlayer().Game
+
+	if err := currentPlayer.PlacePoints(game.Category(idx)); err != nil {
+		http.Error(w, "not a unused category", http.StatusBadRequest)
+		return
+	}
+	s.CurrentPlayerIndex = (s.CurrentPlayerIndex + 1) % len(s.Games)
+
+	fragment(w, "boardPlay", s.buildGameView())
+	//TODO:
+}
+
 func (s *server) score(w http.ResponseWriter, r *http.Request) {
+	if s.currentPlayer().Game.GetPhase() != game.PhaseSelectScore {
+		slog.Error("s.score: Wrong phase", http.ErrAbortHandler)
+		return
+	}
 	slog.Info("letting player score", "player", s.currentPlayer())
+	view(w, r, "cardScore", s.buildGameView())
 
 }
 
 func (s *server) reroll(w http.ResponseWriter, r *http.Request) {
+	slog.Info("Rerolling", "player", s.currentPlayer().Name)
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "bad form", http.StatusBadRequest)
 		return
@@ -64,6 +87,12 @@ func (s *server) reroll(w http.ResponseWriter, r *http.Request) {
 	if err := p.Game.Reroll(fc); err != nil {
 		slog.Error("reroll failed", "player", p.Name, "error", err)
 		http.Error(w, err.Error(), http.StatusConflict)
+	}
+
+	if p.Game.GetPhase() != game.PhaseReroll {
+		w.Header().Set("HX-Retarget", "#board")
+		w.Header().Set("HX-Reswap", "outerHTML")
+		fragment(w, "boardScore", s.buildGameView())
 		return
 	}
 
@@ -107,9 +136,7 @@ func (s *server) addPlayers(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	s.Mux.Unlock()
-	gameView := s.buildGameView()
-
 	slog.Info("players added", "count", len(names), "names", names)
 
-	view(w, r, "board", gameView)
+	view(w, r, "boardPlay", s.buildGameView())
 }

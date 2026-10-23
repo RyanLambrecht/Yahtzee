@@ -1,0 +1,8 @@
+{{define "bonus" -}}
+<tbody class="cardBonus">
+	<tr>
+		<th>Bonus</th>
+		{{range $_, $player := .Players}}<td>{{$player.Bonus}}</td>{{end}}
+	</tr>
+</tbody>
+{{- end}}

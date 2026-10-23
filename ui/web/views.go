@@ -19,6 +19,7 @@ type GameView struct {
 	Round              int
 	UpperSection       []Category
 	LowerSection       []Category
+	UnusedSlot         int
 }
 
 type Category struct {
@@ -27,8 +28,8 @@ type Category struct {
 }
 
 var UpperCategories = []Category{
-	{"Ones", 0}, {"Twos", 1}, {"Threes", 2},
-	{"Fours", 3}, {"Fives", 4}, {"Sixes", 5},
+	{"Ones", int(game.Ones)}, {"Twos", int(game.Twos)}, {"Threes", int(game.Threes)},
+	{"Fours", int(game.Fours)}, {"Fives", int(game.Fives)}, {"Sixes", int(game.Sixes)},
 }
 
 var LowerCategories = []Category{
@@ -38,15 +39,20 @@ var LowerCategories = []Category{
 
 func (s *server) buildGameView() GameView {
 	slog.Info("building game view")
-	var gv GameView
+
+	playerViews := make([]PlayerView, 0, len(s.Games))
 	for _, g := range s.Games {
-		gv.Players = append(gv.Players, buildPlayerView(g))
+		playerViews = append(playerViews, buildPlayerView(g))
 	}
-	gv.CurrentPlayerIndex = s.CurrentPlayerIndex
-	gv.Round = s.Games[s.CurrentPlayerIndex].Round
-	gv.UpperSection = UpperCategories
-	gv.LowerSection = LowerCategories
-	return gv
+
+	return GameView{
+		Players:            playerViews,
+		CurrentPlayerIndex: s.CurrentPlayerIndex, //TDOO: can probably change this to a player view if the gohtml is updated
+		Round:              s.Games[s.CurrentPlayerIndex].Round,
+		UpperSection:       UpperCategories,
+		LowerSection:       LowerCategories,
+		UnusedSlot:         game.UnusedCategoryValue,
+	}
 }
 
 func buildPlayerView(p player) PlayerView {
@@ -56,8 +62,16 @@ func buildPlayerView(p player) PlayerView {
 	for i := range game.CategoryCount {
 		pts[i] = p.Game.GetPointsForCategory(i)
 	}
-	bonus := game.UnusedCategoryValue
-	if p.Game.UpperBonus() {
+
+	bonus := -game.UpperBonusRequirement
+	if !p.Game.UpperBonus() {
+		for _, v := range UpperCategories {
+			points := p.Game.GetPointsForCategory(game.Category(v.Index))
+			if points != game.UnusedCategoryValue {
+				bonus += points
+			}
+		}
+	} else {
 		bonus = game.UpperBonusAmount
 	}
 

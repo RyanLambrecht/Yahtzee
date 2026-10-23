@@ -1,0 +1,63 @@
+{{define "boardScore" -}}
+<div id="board">
+	{{template "cardScore" .}}
+	{{template "displayRoll" (index .Players .CurrentPlayerIndex)}}
+</div>
+{{- end}}
+
+{{define "cardScore" -}}
+<div id="cardScore">
+	{{if .Players}}<h2>{{(index .Players .CurrentPlayerIndex).Name}}</h2>{{end}}
+	<table>
+		<thead class="cardHeader">
+			<tr>
+				<th>Category</th>
+				{{range $_, $player := .Players}}<th>{{$player.Name}}</th>{{end}}
+			</tr>
+		</thead>
+		<tbody class="cardUpper">
+			{{range $cat := .UpperSection}}
+			<tr>
+				<th>{{$cat.Name}}</th>
+				{{range $i, $player := $.Players}}
+				{{$pts := index $player.PointsByCategory $cat.Index}}
+				<td>
+					{{if and (eq $i $.CurrentPlayerIndex) (eq $pts $.UnusedSlot)}}
+					<button hx-post="/score/{{$cat.Index}}" hx-target="#board" hx-swap="outerHTML">Score</button>
+					{{else}}{{$pts}}{{end}}
+				</td>
+				{{end}}
+			</tr>
+			{{end}}
+		</tbody>
+		{{template "bonus" .}}
+		<tbody class="cardLower">
+			{{range $cat := .LowerSection}}
+			<tr>
+				<th>{{$cat.Name}}</th>
+				{{range $i, $player := $.Players}}
+				{{$pts := index $player.PointsByCategory $cat.Index}}
+				<td>
+					{{if and (eq $i $.CurrentPlayerIndex) (eq $pts $.UnusedSlot)}}
+					<button hx-post="/score/{{$cat.Index}}" hx-target="#board" hx-swap="outerHTML">Score</button>
+					{{else}}{{$pts}}{{end}}
+				</td>
+				{{end}}
+			</tr>
+			{{end}}
+		</tbody>
+		<tfoot class="cardTotal">
+			<tr>
+				<th>Total</th>
+				{{range $_, $player := .Players}}<td>{{$player.TotalPoints}}</td>{{end}}
+			</tr>
+		</tfoot>
+	</table>
+</div>
+{{end -}}
+
+{{define "displayRoll" -}}
+<div id="displayRoll">
+	{{range .Dice}}<span class="die">{{.}}</span>{{end}}
+</div>
+{{- end}}
