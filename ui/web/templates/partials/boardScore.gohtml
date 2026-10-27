@@ -6,6 +6,7 @@
 </div>
 {{- end}}
 
+
 {{define "cardScore" -}}
 <div id="cardScore">
 	<table>
@@ -16,10 +17,18 @@
 				<th>{{$cat.Name}}</th>
 				{{range $i, $player := $.Players}}
 				{{$pts := index $player.PointsByCategory $cat.Index}}
-				<td>
-					{{if and (eq $i $.CurrentPlayerIndex) (eq $pts $.UnusedSlot)}}
-					<button hx-post="/score/{{$cat.Index}}" hx-target="#board" hx-swap="outerHTML">Score</button>
-					{{else}}{{$pts}}{{end}}
+				{{$slotUnused := eq $pts $.UnusedSlot}}
+				{{$currPlayer := eq $i $.CurrentPlayerIndex}}
+				<td {{if and $slotUnused $currPlayer}}class="scoreChoice" {{end}}>
+					{{if $slotUnused}}
+					{{if $currPlayer}}
+					<button class="scoreCellButton" aria-label="Score {{$cat.Name}}" hx-post="/score/{{$cat.Index}}"
+						hx-target="#board" hx-swap="outerHTML">
+					</button>
+					{{end}}
+					{{else}}
+					{{$pts}}
+					{{end}}
 				</td>
 				{{end}}
 			</tr>
@@ -32,10 +41,18 @@
 				<th>{{$cat.Name}}</th>
 				{{range $i, $player := $.Players}}
 				{{$pts := index $player.PointsByCategory $cat.Index}}
-				<td>
-					{{if and (eq $i $.CurrentPlayerIndex) (eq $pts $.UnusedSlot)}}
-					<button hx-post="/score/{{$cat.Index}}" hx-target="#board" hx-swap="outerHTML">Score</button>
-					{{else}}{{$pts}}{{end}}
+				{{$slotUnused := eq $pts $.UnusedSlot}}
+				{{$currPlayer := eq $i $.CurrentPlayerIndex}}
+				<td {{if and $slotUnused $currPlayer}}class="scoreChoice" {{end}}>
+					{{if $slotUnused}}
+					{{if $currPlayer}}
+					<button class="scoreCellButton" aria-label="Score {{$cat.Name}}" hx-post="/score/{{$cat.Index}}"
+						hx-target="#board" hx-swap="outerHTML">
+					</button>
+					{{end}}
+					{{else}}
+					{{$pts}}
+					{{end}}
 				</td>
 				{{end}}
 			</tr>
@@ -44,10 +61,11 @@
 		{{template "cardFoot" .}}
 	</table>
 </div>
-{{- end }}
+{{- end}}
+
 
 {{define "displayRoll" -}}
-<div id="displayRoll">
+<div id="displayRoll" class="label">
 	{{range .Dice}}<span class="die">{{.}}</span>{{end}}
 </div>
 {{- end}}

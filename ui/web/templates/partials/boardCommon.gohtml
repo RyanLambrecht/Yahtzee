@@ -2,8 +2,8 @@
 <h2>{{(index .Players .CurrentPlayerIndex).Name}}</h2>
 {{- end}}
 
-{{define "cardHead"}}
-<thead class="cardHeader">
+{{define "cardHead" -}}
+<thead id="cardHeader">
 	<tr>
 		<th>Category</th>
 		{{range $_, $player := .Players}}<th>{{$player.Name}}</th>{{end}}
@@ -11,20 +11,53 @@
 </thead>
 {{- end}}
 
-{{define "cardFoot"}}
-<tfoot class="cardTotal">
+{{define "cardFoot" -}}
+<tfoot id="cardTotal">
 	<tr>
 		<th>Total</th>
-		{{range $_, $player := .Players}}<td>{{$player.TotalPoints}}</td>{{end}}
+		{{range $i, $player := .Players}}<td id="total-{{$i}}" class="score" style="--n: {{$player.TotalPoints}}"></td>
+		{{end}}
 	</tr>
 </tfoot>
 {{- end}}
 
 {{define "bonus" -}}
-<tbody class="cardBonus">
+<tbody id="cardBonus">
 	<tr>
 		<th>Bonus</th>
-		{{range $_, $player := .Players}}<td>{{$player.Bonus}}</td>{{end}}
+		{{range $i, $player := .Players}}<td id="bonus-{{$i}}" class="score" style="--n: {{$player.Bonus}}"></td>{{end}}
 	</tr>
 </tbody>
+{{- end}}
+
+{{define "cardDisplay" -}}
+<div id="cardDisplay">
+	<table>
+		{{template "cardHead" .}}
+		<tbody class="cardUpper">
+			{{range $cat := .UpperSection}}
+			<tr>
+				<th>{{$cat.Name}}</th>
+				{{range $_, $player := $.Players}}
+				{{$pts := index $player.PointsByCategory $cat.Index}}
+				<td>{{if ne $pts $.UnusedSlot}}{{$pts}}{{end}}</td>
+				{{end}}
+			</tr>
+			{{end}}
+		</tbody>
+		{{template "bonus" .}}
+		<tbody class="cardLower">
+			{{range $cat := .LowerSection}}
+			<tr>
+				<th>{{$cat.Name}}</th>
+				{{range $_, $player := $.Players}}
+				{{$pts := index $player.PointsByCategory $cat.Index}}
+				<td>{{if ne $pts $.UnusedSlot}}{{$pts}}{{end}}</td>
+				{{end}}
+			</tr>
+			{{end}}
+		</tbody>
+		{{template "cardFoot" .}}
+	</table>
+</div>
 {{- end}}

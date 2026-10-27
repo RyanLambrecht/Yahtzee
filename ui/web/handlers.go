@@ -31,6 +31,19 @@ func (s *server) turn(w http.ResponseWriter, r *http.Request) {
 
 func (s *server) placePointInSlot(w http.ResponseWriter, r *http.Request) {
 	slog.Info("placing points", "player", s.currentPlayer())
+
+	currPhase := s.currentPlayer().Game.GetPhase()
+
+	if currPhase == game.PhaseReroll {
+		g := s.currentPlayer().Game
+		if err := g.EndRerolling(); err != nil {
+			http.Error(w, "can't move from rerolling to scoreing", http.StatusBadRequest)
+			return
+		}
+		s.score(w, r)
+		return
+	}
+
 	idx, err := strconv.Atoi(r.PathValue("index"))
 	if err != nil {
 		http.Error(w, "invalid category", http.StatusBadRequest)
@@ -94,6 +107,7 @@ func (s *server) reroll(w http.ResponseWriter, r *http.Request) {
 	if err := p.Game.Reroll(fc); err != nil {
 		slog.Error("reroll failed", "player", p.Name, "error", err)
 		http.Error(w, err.Error(), http.StatusConflict)
+		return
 	}
 
 	if p.Game.GetPhase() != game.PhaseReroll {

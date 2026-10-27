@@ -237,9 +237,8 @@ func (g *Game) PlacePoints(slotChoice Category) error {
 }
 
 func (g *Game) TotalPoints() int {
-	total := 0
-	total += g.upperTotal()
-	if total > UpperBonusRequirement {
+	total := g.upperTotal()
+	if g.UpperBonus() {
 		total += UpperBonusAmount
 	}
 	for i := int(Tok); i <= int(Chance); i++ {
@@ -248,13 +247,12 @@ func (g *Game) TotalPoints() int {
 		}
 	}
 	return total
-
 }
 
 func (g *Game) upperTotal() int {
 	total := 0
 	// doesn't use a for range loop to keep its starting point dependent on Ones
-	for i := int(Ones); i < int(Sixes); i++ {
+	for i := int(Ones); i <= int(Sixes); i++ {
 		if g.card[i] != UnusedCategoryValue {
 			total += g.card[i]
 		}

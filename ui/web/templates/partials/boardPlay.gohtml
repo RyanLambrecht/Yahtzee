@@ -6,35 +6,6 @@
 </div>
 {{- end}}
 
-{{define "cardDisplay" -}}
-<div id="cardDisplay">
-	<table>
-		{{template "cardHead" .}}
-		<tbody class="cardUpper">
-			{{range $cat := .UpperSection}}
-			<tr>
-				<th>{{$cat.Name}}</th>
-				{{range $_, $player := $.Players}}
-				<td>{{index $player.PointsByCategory $cat.Index}}</td>
-				{{end}}
-			</tr>
-			{{end}}
-		</tbody>
-		{{template "bonus" .}}
-		<tbody class="cardLower">
-			{{range $cat := .LowerSection}}
-			<tr>
-				<th>{{$cat.Name}}</th>
-				{{range $_, $player := $.Players}}
-				<td>{{index $player.PointsByCategory $cat.Index}}</td>
-				{{end}}
-			</tr>
-			{{end}}
-		</tbody>
-		{{template "cardFoot" .}}
-	</table>
-</div>
-{{end -}}
 
 
 {{define "startRoll" -}}
@@ -46,7 +17,7 @@
 	<form hx-post="/reroll" hx-target="#reroll" hx-swap="outerHTML">
 		{{range $i, $face := .Dice}}
 		<input type="hidden" name="dice" value="{{$face}}">
-		<label>
+		<label class="label">
 			<input type="checkbox" name="reroll" value="{{$i}}">
 			{{$face}}
 		</label>

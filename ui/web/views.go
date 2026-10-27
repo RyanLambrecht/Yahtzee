@@ -27,6 +27,7 @@ type GameEndView struct {
 	UpperSection []Category
 	LowerSection []Category
 	Winner       string
+	UnusedSlot   int
 }
 
 type Category struct {
@@ -110,6 +111,7 @@ func (s *server) buildGameEndView() GameEndView {
 		UpperSection: UpperCategories,
 		LowerSection: LowerCategories,
 		Winner:       winner.Name,
+		UnusedSlot:   game.UnusedCategoryValue,
 	}
 
 }
