@@ -17,9 +17,10 @@
 	<form hx-post="/reroll" hx-target="#reroll" hx-swap="outerHTML">
 		{{range $i, $face := .Dice}}
 		<input type="hidden" name="dice" value="{{$face}}">
-		<label class="label">
+		<label class="label die">
 			<input type="checkbox" name="reroll" value="{{$i}}">
-			{{$face}}
+			<!-- {{$face}} -->
+			<img src="/static/dice/custom/j{{$face}}.PNG" alt="Die showing {{$face}}">
 		</label>
 		{{end}}
 		<button type="submit">Reroll selected</button>

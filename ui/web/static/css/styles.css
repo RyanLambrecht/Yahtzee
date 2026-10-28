@@ -10,7 +10,6 @@
 	font-display: swap;
 }
 
-
 #cardBonus tr {
 	background-color: var(--non-fillable);
 }
@@ -22,8 +21,8 @@
 #main {
 	background-color: #443a6cff;
 	width: 40vw;
-	border-radius: 10pt;
-	border: 10pt solid whitesmoke;
+	border-radius: 0.625rem;
+	border: 0.625rem solid whitesmoke;
 	margin: 0 auto;
 	height: 80vh;
 }
@@ -88,7 +87,7 @@ table {
 td,
 th {
 	border: 1px solid #ddd;
-	padding: 8px;
+	padding: 0.5rem;
 	color: whitesmoke;
 }
 
@@ -118,9 +117,38 @@ td.scoreChoice {
 	background-color: whitesmoke;
 }
 
+.die {
+	display: inline-block;
+	cursor: pointer;
+}
+
+.die input[type="checkbox"] {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.die img {
+	width: clamp(2.5rem, 6vw, 4.5rem);
+	height: auto;
+	aspect-ratio: 1;
+	border: 3px solid transparent;
+	border-radius: 0.5rem;
+	transition: transform 0.1s, border-color 0.1s;
+}
+
+.die input:checked+img {
+	border-color: gold;
+	transform: translateY(-6px);
+}
+
+.die input:focus-visible+img {
+	outline: 2px solid currentColor;
+}
+
 th {
-	padding-top: 12px;
-	padding-bottom: 12px;
+	padding-top: 0.75rem;
+	padding-bottom: 0.75rem;
 	text-align: left;
 	background-color: gray;
 	color: white;

@@ -134,25 +134,19 @@ func fullhouse(counts FaceCounts) int {
 	return 0
 }
 
-func straight(counts FaceCounts, length int) int {
-	longest := 0
-	currentRun := 0
-
+func straight(counts FaceCounts, length, points int) int {
+	longest, run := 0, 0
 	for _, v := range counts {
 		if v != 0 {
-			currentRun++
+			run++
 		} else {
-			currentRun = 0
+			run = 0
 		}
-		if longest < currentRun {
-			longest = currentRun
-		}
+		longest = max(longest, run)
 	}
-
 	if longest >= length {
-		return length * 10
+		return points
 	}
-
 	return 0
 }
 
@@ -190,12 +184,12 @@ func (g *Game) GetPotentialPointsForCategory(slotChoice Category) int {
 		if status.isJoker {
 			return 30
 		}
-		return straight(g.diceCount, 3)
+		return straight(g.diceCount, 4, 30)
 	case Ls:
 		if status.isJoker {
 			return 40
 		}
-		return straight(g.diceCount, 4)
+		return straight(g.diceCount, 5, 40)
 	case Yahtzee:
 		if status.isYahtzee {
 			return 50
