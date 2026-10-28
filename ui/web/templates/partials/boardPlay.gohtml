@@ -1,7 +1,7 @@
 {{define "boardPlay" -}}
 <div id="board">
 	{{template "currentPlayer" .}}
-	{{template "cardDisplay" .}}
+	{{template "cardScore" .}}
 	{{template "startRoll" }}
 </div>
 {{- end}}
@@ -23,7 +23,7 @@
 			<img src="/static/dice/custom/j{{$face}}.PNG" alt="Die showing {{$face}}">
 		</label>
 		{{end}}
-		<button type="submit">Reroll selected</button>
+		<button id="reroll-button" type="submit">Reroll selected</button>
 	</form>
 </div>
 {{- end}}

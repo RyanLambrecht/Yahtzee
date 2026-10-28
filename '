@@ -1,0 +1,167 @@
+:root {
+	--even-color: #4c4c4cff;
+	--odd-color: #333333ff;
+	--non-fillable: #49388dff;
+}
+
+@font-face {
+	font-family: 'Karmatic Arcade';
+	src: url('/static/fonts/ka1.ttf') format('truetype');
+	font-display: swap;
+}
+
+#cardBonus tr {
+	background-color: var(--non-fillable);
+}
+
+#cardTotal tr {
+	background-color: var(--non-fillable);
+}
+
+#main {
+	background-color: #443a6cff;
+	width: 60vw;
+	border-radius: 0.625rem;
+	border: 0.625rem solid whitesmoke;
+	margin: 0 auto;
+	height: 80vh;
+}
+
+#add-players-start {
+	margin: 0 auto;
+}
+
+#reroll-button {
+	margin: 0 auto;
+	width: 100%;
+	height: 5rem;
+
+}
+
+@property --n {
+	syntax: "<integer>";
+	inherits: false;
+	initial-value: 0;
+}
+
+.label {
+	color: whitesmoke;
+}
+
+.score {
+	counter-reset: n var(--n);
+	transition: --n 0.8s ease-out;
+	color: whitesmoke;
+}
+
+.score::after {
+	content: counter(n);
+}
+
+.name-field {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.name-field button {
+	margin-left: 0;
+}
+
+.name-field input {
+	flex: 1;
+}
+
+body {
+	background-color: #303030;
+}
+
+h1 {
+	text-align: center;
+	color: whitesmoke;
+	font-family: 'Karmatic Arcade', sans-serif;
+}
+
+h2 {
+	background-color: white;
+}
+
+table {
+	font-family: Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+}
+
+td,
+th {
+	border: 1px solid #ddd;
+	padding: 0.5rem;
+	color: whitesmoke;
+}
+
+tr:nth-child(even) {
+	background-color: var(--even-color);
+}
+
+tr:nth-child(odd) {
+	background-color: var(--odd-color);
+}
+
+td.scoreChoice {
+	padding: 0;
+}
+
+.scoreCellButton {
+	display: block;
+	width: 100%;
+	height: 100%;
+	min-height: 2rem;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+}
+
+.scoreCellButton:hover {
+	background-color: whitesmoke;
+}
+
+.die {
+	display: inline-block;
+	cursor: pointer;
+}
+
+.die input[type="checkbox"] {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.die img {
+	width: clamp(2.5rem, 10vw, 10.5rem);
+	height: auto;
+	aspect-ratio: 1;
+	border: 3px solid transparent;
+	border-radius: 0.5rem;
+	transition: transform 0.1s, border-color 0.1s;
+}
+
+.die input:checked+img {
+	border-color: gold;
+	transform: translateY(-6px);
+}
+
+.die input:focus-visible+img {
+	outline: 2px solid currentColor;
+}
+
+th {
+	padding-top: 0.75rem;
+	padding-bottom: 0.75rem;
+	text-align: left;
+	background-color: gray;
+	color: white;
+}
+
+button {
+	display: block;
+	margin-left: auto;
+}
