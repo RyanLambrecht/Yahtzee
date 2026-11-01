@@ -16,10 +16,14 @@ type container struct {
 var tmplFS embed.FS
 
 var tmpl = template.Must(
-	template.New("").ParseFS(tmplFS,
-		"templates/*.gohtml",
-		"templates/*/*.gohtml",
-	),
+	template.New("").
+		Funcs(template.FuncMap{
+			"inc": func(i int) int { return i + 1 },
+		}).
+		ParseFS(tmplFS,
+			"templates/*.gohtml",
+			"templates/*/*.gohtml",
+		),
 )
 
 // fragment renders a named template as-is (for HTMX responses).
