@@ -98,7 +98,7 @@ func (s *server) buildGameEndView() GameEndView {
 	playerViews := make([]PlayerView, 0, len(s.Games))
 	winner := s.Games[0]
 
-	for i := 1; i < len(s.Games); i++ {
+	for i := 0; i < len(s.Games); i++ {
 		g := s.Games[i]
 		playerViews = append(playerViews, buildPlayerView(g))
 		if g.Game.TotalPoints() > winner.Game.TotalPoints() {

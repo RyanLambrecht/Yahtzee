@@ -65,7 +65,7 @@
 
 
 {{define "displayRoll" -}}
-<div id="displayRoll" class="label">
-	{{range .Dice}}<span class="die">{{.}}</span>{{end}}
+<div id="displayRoll" class="label dice-row">
+	{{range .Dice}}<span class="die"><img src="/static/dice/custom/j{{.}}.PNG" alt="Die showing {{.}}"></span>{{end}}
 </div>
 {{- end}}

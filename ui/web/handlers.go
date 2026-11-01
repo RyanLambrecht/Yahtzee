@@ -32,32 +32,31 @@ func (s *server) turn(w http.ResponseWriter, r *http.Request) {
 func (s *server) placePointInSlot(w http.ResponseWriter, r *http.Request) {
 	slog.Info("placing points", "player", s.currentPlayer())
 
-	currPhase := s.currentPlayer().Game.GetPhase()
-
-	if currPhase == game.PhaseReroll {
-		g := s.currentPlayer().Game
-		if err := g.EndRerolling(); err != nil {
-			http.Error(w, "can't move from rerolling to scoreing", http.StatusBadRequest)
-			return
-		}
-		s.score(w, r)
-		return
-	}
-
 	idx, err := strconv.Atoi(r.PathValue("index"))
 	if err != nil {
 		http.Error(w, "invalid category", http.StatusBadRequest)
 		return
 	}
-	currentPlayer := s.currentPlayer().Game
 
-	if err := currentPlayer.PlacePoints(game.Category(idx)); err != nil {
-		http.Error(w, "not a unused category", http.StatusBadRequest)
+	g := s.currentPlayer().Game
+
+	// If the player clicks a score cell while still rerolling, end the
+	// reroll phase first, then score into the clicked category.
+	if g.GetPhase() == game.PhaseReroll {
+		if err := g.EndRerolling(); err != nil {
+			http.Error(w, "can't move from rerolling to scoring", http.StatusBadRequest)
+			return
+		}
+	}
+
+	if err := g.PlacePoints(game.Category(idx)); err != nil {
+		http.Error(w, "not an unused category", http.StatusBadRequest)
 		return
 	}
+
 	s.CurrentPlayerIndex = (s.CurrentPlayerIndex + 1) % len(s.Games)
 
-	//Check to see if the game is over before the next players turn is served
+	// Check to see if the game is over before the next player's turn is served
 	if s.currentPlayer().Game.GetPhase() == game.PhaseEnd {
 		w.Header().Set("HX-Retarget", "#board")
 		w.Header().Set("HX-Reswap", "outerHTML")
@@ -93,6 +92,11 @@ func (s *server) reroll(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		indices = append(indices, i)
+	}
+
+	if len(indices) == 0 {
+		w.WriteHeader(http.StatusNoContent)
+		return
 	}
 
 	p := s.currentPlayer()

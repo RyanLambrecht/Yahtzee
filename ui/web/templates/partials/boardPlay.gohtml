@@ -9,7 +9,8 @@
 
 
 {{define "startRoll" -}}
-<button id="startRoll" type="button" hx-get="/roll" hx-target="#startRoll" hx-swap="outerHTML">Roll</button>
+<button id="startRoll" class="wide-button" type="button" hx-get="/roll" hx-target="#startRoll"
+	hx-swap="outerHTML">Roll</button>
 {{- end}}
 
 {{define "rerollDice" -}}
@@ -19,11 +20,10 @@
 		<input type="hidden" name="dice" value="{{$face}}">
 		<label class="label die">
 			<input type="checkbox" name="reroll" value="{{$i}}">
-			<!-- {{$face}} -->
 			<img src="/static/dice/custom/j{{$face}}.PNG" alt="Die showing {{$face}}">
 		</label>
 		{{end}}
-		<button id="reroll-button" type="submit">Reroll selected</button>
+		<button id="reroll-button" class="wide-button" type="submit">Reroll</button>
 	</form>
 </div>
 {{- end}}
