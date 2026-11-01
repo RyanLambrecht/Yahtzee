@@ -2,7 +2,6 @@
 package game
 
 import (
-	"math/rand"
 	"slices"
 )
 
@@ -53,7 +52,7 @@ func (g *Game) Roll() error {
 
 	var dice FaceCounts
 	for range NumberOfDice {
-		dice[rand.Intn(FaceCount)]++
+		dice[g.rng.IntN(FaceCount)]++
 	}
 	g.diceCount = dice
 	g.rerolls = rerolls
@@ -88,7 +87,7 @@ func (g *Game) Reroll(toRoll FaceCounts) error {
 	for i, v := range toRoll {
 		g.diceCount[i] -= v
 		for range v {
-			g.diceCount[rand.Intn(FaceCount)] += 1
+			g.diceCount[g.rng.IntN(FaceCount)] += 1
 		}
 	}
 	g.rerolls--

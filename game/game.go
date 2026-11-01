@@ -1,5 +1,7 @@
 package game
 
+import "math/rand/v2"
+
 const (
 	UnusedCategoryValue   = -1
 	NumberOfDice          = 5
@@ -53,10 +55,11 @@ type Game struct {
 	diceCount FaceCounts
 	card      ScoreCard
 	options   []Category
+	rng       *rand.Rand
 }
 
 // NewGame creates a new yahtzee game
-func NewGame() *Game {
+func NewGame(seed rand.Source) *Game {
 	card := make([]int, CategoryCount)
 	options := make([]Category, CategoryCount)
 	for i := range card {
@@ -69,6 +72,7 @@ func NewGame() *Game {
 		diceCount: FaceCounts{},
 		card:      card,
 		options:   options,
+		rng:       rand.New(rand.New(seed)),
 	}
 }
 

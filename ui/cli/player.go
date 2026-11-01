@@ -1,6 +1,9 @@
 package cli
 
-import "yahtzee/game"
+import (
+	"math/rand/v2"
+	"yahtzee/game"
+)
 
 type Player struct {
 	Name string
@@ -8,7 +11,7 @@ type Player struct {
 }
 
 func NewPlayer(name string) Player {
-	g := game.NewGame()
+	g := game.NewGame(rand.NewPCG(rand.Uint64(), rand.Uint64()))
 	return Player{
 		Name: name,
 		game: g,

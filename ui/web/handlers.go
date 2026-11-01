@@ -157,7 +157,7 @@ func (s *server) addPlayers(w http.ResponseWriter, r *http.Request) {
 	for _, n := range names {
 		s.Games = append(s.Games, player{
 			Name: n,
-			Game: game.NewGame(),
+			Game: game.NewGame(s.rng),
 		})
 	}
 	s.Mux.Unlock()

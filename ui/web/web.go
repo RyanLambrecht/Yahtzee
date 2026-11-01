@@ -6,6 +6,7 @@ import (
 	"embed"
 	"log"
 	"log/slog"
+	"math/rand/v2"
 	"net/http"
 	"sync"
 	"yahtzee/game"
@@ -21,13 +22,16 @@ type server struct {
 	Mux                sync.Mutex
 	CurrentPlayerIndex int
 	Games              []player
+	rng                rand.Source
 }
 
 //go:embed  static
 var staticFS embed.FS
 
 func Run() {
-	ser := &server{}
+	ser := &server{
+		rng: rand.NewPCG(rand.Uint64(), rand.Uint64()),
+	}
 	mux := ser.routes()
 
 	slog.Info("started up server")
